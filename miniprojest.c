@@ -26,7 +26,6 @@ void afficherlist() {
 }
 
 void triedesPatients() {
-
     FILE* fAllPatients = fopen("AllPatients.txt", "r+");
     if (fAllPatients == NULL) {
         printf("Erreur lors de l'ouverture du fichier AllPatients.txt.\n");
@@ -34,7 +33,7 @@ void triedesPatients() {
     }
 
     char ligne[1000];
-    char records[1000][1000];
+    char records[1000][100];
     int recordCount = 0;
 
     while (fgets(ligne, sizeof(ligne), fAllPatients) != NULL) {
@@ -42,15 +41,14 @@ void triedesPatients() {
         recordCount++;
     }
 
-
     int i, j;
-    char temp[1000];
+    char temp[100];
 
     for (i = 0; i < recordCount - 1; i++) {
         for (j = 0; j < recordCount - i - 1; j++) {
-            char name1[50], name2[50];
-            sscanf(records[j], "Nom : %s", name1);
-            sscanf(records[j + 1], "Nom : %s", name2);
+            char name1[100], name2[100];
+            sscanf(records[j], "Nom : %[^\n]", name1);
+            sscanf(records[j + 1], "Nom : %[^\n]", name2);
 
             if (strcmp(name1, name2) > 0) {
                 strcpy(temp, records[j]);
@@ -60,7 +58,6 @@ void triedesPatients() {
         }
     }
 
-
     fseek(fAllPatients, 0, SEEK_SET);
 
     for (i = 0; i < recordCount; i++) {
@@ -69,6 +66,7 @@ void triedesPatients() {
 
     fclose(fAllPatients);
 }
+
 void recherche1(char* nomE){
 
 
@@ -92,7 +90,7 @@ void recherche1(char* nomE){
     }
 
     if (!patientTrouve) {
-        printf("Le patient n'a pas Ã©tÃ© trouvÃ©.\n");
+        printf("Le patient n'a pas été trouvé.\n");
     }
 
     fclose(fAllPatients);
@@ -130,7 +128,7 @@ void recherche0(char * nomE0){
     }
 
     if (!patientTrouve) {
-        printf("Le patient n'a pas Ã©tÃ© trouvÃ©.\n");
+        printf("Le patient n'a pas été trouvé.\n");
     }
 
     fclose(fAllPatients);
@@ -146,7 +144,7 @@ printf("======editer======\n");
     printf("=======================\n");
     printf("votre choix :");}
 void supprimerDossierPatient(char* nom) {
-    char cheminDossier[100] = "/home/shark/Music/";
+    char cheminDossier[100] = "./";
     strcat(cheminDossier, nom);
 
     char commandeSuppression[100];
@@ -157,7 +155,7 @@ void supprimerDossierPatient(char* nom) {
     if (statut != 0) {
         printf("Erreur lors de la suppression du dossier du patient %s.\n", nom);
     } else {
-        printf("Dossier du patient %s supprimÃ© avec succÃ¨s.\n", nom);
+        printf("Dossier du patient %s supprimé avec succès.\n", nom);
 
         // Remove patient's information from AllPatients.txt
         FILE* fAllPatients = fopen("AllPatients.txt", "r");
@@ -215,30 +213,18 @@ int AjouterP() {
 printf("Entrez le nom de la maladie : ");
 scanf("%49s",&nomMaladie);
 
-    printf("Entrez l'Ã¢ge du patient : ");
+    printf("Entrez l'âge du patient : ");
     scanf("%d", &age);
     getchar();
 
-    printf("Niveau d'urgence (1 niveau trÃ¨s urgent, 2 niveau urgen,  3 niveau modÃ©rÃ©, 4 niveau faible, 5 niveau trÃ¨s faible) : ");
+    printf("Niveau d'urgence (1 niveau très urgent, 2 niveau urgen,  3 niveau modéré, 4 niveau faible, 5 niveau très faible) : ");
     scanf("%d", &niveauUrgence);
     getchar();
 
     idPatient = genererID();
 
-    FILE *fichier;
-    fichier = fopen("listes.txt", "w");
 
-    if (fichier == NULL) {
-        printf("Erreur lors de la crÃ©ation du fichier.\n");
-        return 1;
-    }
-    fprintf(fichier, "ID du patient : \n%d", idPatient);
-    fprintf(fichier, "NOM du patient : \n%s", nomPatient);
-    fprintf(fichier, "Sexe : \n%s", sexe);
-    fprintf(fichier, "Ã‚ge : \n%d", age);
-    fprintf(fichier, "Adresse : \n%s", adresse);
-    fprintf(fichier, "Nom de la maladie : \n%s", nomMaladie);
-    fclose(fichier);
+
 
     char cheminDossier[100] = "./";
     strcat(cheminDossier, nomPatient);
@@ -252,7 +238,7 @@ scanf("%49s",&nomMaladie);
     c++;
     FILE *fMALAD = fopen(fichierMladie, "w");
     if (fMALAD == NULL) {
-        printf("Erreur lors de la crÃ©ation du fichier ID_%d.txt.\n", idPatient);
+        printf("Erreur lors de la création du fichier ID_%d.txt.\n", idPatient);
         return 1;
 
     }
@@ -265,7 +251,7 @@ if(c==0){
     sprintf(fichierID, "%s/ID_%d.txt", cheminDossier, idPatient);
     FILE *fID = fopen(fichierID, "w");
     if (fID == NULL) {
-        printf("Erreur lors de la crÃ©ation du fichier ID_%d.txt.\n", idPatient);
+        printf("Erreur lors de la création du fichier ID_%d.txt.\n", idPatient);
         return 1;
     }
     fprintf(fID, "ID du patient : %d\n", idPatient);
@@ -276,31 +262,31 @@ if(c==0){
     sprintf(fichierPatient, "%s/Inf_%s.txt", cheminDossier, nomPatient);
     FILE *fPatient = fopen(fichierPatient, "w");
     if (fPatient == NULL) {
-        printf("Erreur lors de la crÃ©ation du fichier Informations_%s.txt.\n", nomPatient);
+        printf("Erreur lors de la création du fichier Informations_%s.txt.\n", nomPatient);
         return 1;
     }
     fprintf(fPatient, "Nom : %s\n", nomPatient);
     fprintf(fPatient, "Sexe : %s\n", sexe);
-    fprintf(fPatient, "Ã‚ge : %d\n", age);
+    fprintf(fPatient, "Âge : %d\n", age);
     fprintf(fPatient, "Adresse : %s\n", adresse);
     fprintf(fPatient, "maladie : %s\n",nomMaladie);
 
 
     switch (niveauUrgence) {
         case 1:
-            fprintf(fPatient, "Type d'urgence : niveau trÃ¨s urgent\n");
+            fprintf(fPatient, "Type d'urgence : niveau très urgent\n");
             break;
         case 2:
             fprintf(fPatient, "Type d'urgence : niveau urgent\n");
             break;
         case 3:
-            fprintf(fPatient, "Type d'urgence : niveau modÃ©rÃ©\n");
+            fprintf(fPatient, "Type d'urgence : niveau modéré\n");
             break;
         case 4:
             fprintf(fPatient, "Type d'urgence : niveau faible\n");
             break;
         case 5:
-            fprintf(fPatient, "Type d'urgence : niveau trÃ¨s faible\n");
+            fprintf(fPatient, "Type d'urgence : niveau très faible\n");
             break;
         default:
             fprintf(fPatient, "Type d'urgence : Inconnu\n");
@@ -312,7 +298,7 @@ if(c==0){
     sprintf(fichierMladie, "%s/malad_%s.txt", cheminDossier, nomMaladie);
     FILE *fMALAD = fopen(fichierMladie, "w");
     if (fMALAD == NULL) {
-        printf("Erreur lors de la crÃ©ation du fichier ID_%d.txt.\n", idPatient);
+        printf("Erreur lors de la création du fichier ID_%d.txt.\n", idPatient);
         return 1;
     }
 
@@ -332,11 +318,11 @@ if(c==0){
     time(&tempsActuel);
     tempsInfo = localtime(&tempsActuel);
     strftime(datePresence, sizeof(datePresence), "%Y-%m-%d", tempsInfo);
-    fprintf(fAllPatients, "Date de prÃ©sence : %s\t", datePresence);
+    fprintf(fAllPatients, "Date de présence : %s\t\n", datePresence);
 
     fclose(fAllPatients);
 
-    printf("CrÃ©Ã© avec succÃ¨s.\n");
+    printf("Créé avec succès.\n");
 
     return 0;
 
@@ -421,7 +407,7 @@ int comPA=0,comPMA=0;
                 printf("Au revoir !\n");
                 break;
             default:
-                printf("Choix invalide. Veuillez rÃ©essayer.\n");
+                printf("Choix invalide. Veuillez réessayer.\n");
                 break;
         }
 
